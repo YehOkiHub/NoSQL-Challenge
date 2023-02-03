@@ -27,9 +27,9 @@ module.exports = {
         .then((userData) =>
           !userData
             ? res.status(404).json({ message: 'No user with that ID' })
-            : Users.deleteMany({ _id: { $in: userData } })
+            : Users.findOneAndRemove({ _id: { $in: userData } })
         )
-        .then(() => res.json({ message: 'All users deleted!' }))
+        .then(() => res.json({ message: 'User deleted!' }))
         .catch((err) => res.status(500).json(err));
     },   
     updateUser(req, res) {
