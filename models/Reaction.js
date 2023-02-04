@@ -24,6 +24,7 @@ const reactionSchema = new Schema(
       default: Date.now,
       get: timeStamp => dateFormat(timeStamp)
     },
+    reactions: [reactionSchema]
   },
   {
     toJSON: {
