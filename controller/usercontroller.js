@@ -1,13 +1,14 @@
-const { Users, Thoughts } = require('../models');
+const Users  = require('../models/Users');
+
 
 const friendCount = async () =>
-  User.aggregate()
+  Users.aggregate()
     .count("FriendCount")
     .then((numberOfFriends) => numberOfFriends);
 
 // Aggregate function for getting the overall grade using $avg
 const userThought = async (userId) =>
-  User.aggregate([
+  Users.aggregate([
     // only include the given student by using $match
     { $match: { _id: ObjectId(userId) } },
     {
@@ -29,10 +30,11 @@ module.exports = {
         .catch((err) => res.status(500).json(err));
     },   
     getSingleuser(req, res) {
-      Users.findOne({ _id: req.params.id })
+      console.log(req)
+      Users.findOne({ _id: req.params.userId })
         .select('-__v')
-        .then((userData) =>
-          res.json(userData)
+        .then((userData) =>          
+          res.status(200).json(userData)
     )
         .catch((err) => res.status(500).json(err));
     },
@@ -45,7 +47,7 @@ module.exports = {
         });
     },
     deleteUser(req, res) {
-      Users.findOneAndDelete({ _id: req.params.id })
+      Users.findOneAndDelete({ _id: req.params.userId })
         .then((userData) =>
           !userData
             ? res.status(404).json({ message: 'No user with that ID' })
@@ -56,7 +58,7 @@ module.exports = {
     },   
     updateUser(req, res) {
         Users.findOneAndUpdate(
-        { _id: req.params.id },
+        { _id: req.params.userId },
         { $set: req.body },
         { runValidators: true, new: true }
       )
