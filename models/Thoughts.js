@@ -1,8 +1,12 @@
-const { Timestamp } = require('bson');
+// const { Timestamp } = require('bson');
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
 const dateFormat = require("../utils/index.js")
+
+
 // Schema to create Student model
+
+
 const thoughtSchema = new Schema(
   {
     thoughtText: {
@@ -13,8 +17,9 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       required: true,
-      default:Date.now,
+      default:Date.now(),
       get: timeStamp => dateFormat(timeStamp)
+      
     },
     username: {
       type: String,
