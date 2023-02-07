@@ -3,11 +3,10 @@ module.export = (date) =>{
  return moment(date).format('MMMM DD YYYY, h:mm:ss a')
 }
 
-// function dateFormat(timeStamp){
-//     return timeStamp = moment().format("MMM Do YY");  
 
-// } 
+let dateFormat  = Date.now()
+let timeStamp = Date.now()
 
-let dateFormat = moment().format('MMMM DD YYYY, h:mm:ss a')
 
 module.export = dateFormat
+module.export = timeStamp
