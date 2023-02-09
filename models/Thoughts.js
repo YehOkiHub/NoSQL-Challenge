@@ -1,7 +1,7 @@
 // const { Timestamp } = require('bson');
 const { Schema, model } = require('mongoose');
 const reactionSchema = require('./Reaction');
-const dateFormat = require("../utils/index.js")
+const { dateFormat, timeStamp } = require("../utils/index.js")
 
 
 // Schema to create Student model
@@ -15,10 +15,24 @@ const thoughtSchema = new Schema(
       max_length: 280,
     },
     createdAt: {
-      type: Date,
+      type: String,
       required: true,
       default:Date.now,
-      get: timeStamp => dateFormat(timeStamp)
+      set: (dayM) => {
+        let date = new Date(dayM)
+
+        let year = date.getFullYear()
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        let month = months[date.getMonth()]
+        let day = date.getDate()
+
+        let newDate = `${year} ${month} ${day}`
+
+
+        return newDate
+
+      }
+      // get: timeStamp => dateFormat(timeStamp)
       
     },
     username: {
@@ -37,6 +51,6 @@ thoughtSchema.virtual('reactionCount').get(function(){
   return this.reactions.length
 })
 
-const Thoughts = model('thought', thoughtSchema);
+const Thoughts = model('thoughts', thoughtSchema);
 
 module.exports = Thoughts;

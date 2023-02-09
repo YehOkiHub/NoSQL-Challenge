@@ -4,9 +4,23 @@ module.export = (date) =>{
 }
 
 
-let dateFormat  = Date.now()
-let timeStamp = Date.now()
+// let dateFormat  = Date.now()
+// let timeStamp = Date.now()
+
+// function dateFormat(date){
+
+//     return date
+
+// }
+
+// function timeStamp(date){
+
+//     return date
+
+// }
 
 
-module.export = dateFormat
-module.export = timeStamp
+// module.export = dateFormat
+// module.export = timeStamp
+
+// module.export = {dateFormat, timeStamp}

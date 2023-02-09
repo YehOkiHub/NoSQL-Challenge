@@ -1,15 +1,20 @@
 const Thoughts = require("../models/Thoughts");
+const Users = require("../models/Users");
 
 module.exports = {
   // Get all thoughts
   getThought(req, res) {
     Thoughts.find()
       .then((userData) => res.json(userData))
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // res.status(500).json(err)
   },
   // Get a thought
   getSinglethought(req, res) {
-    Thoughts.findOne({ _id: req.params.userId })
+    Thoughts.findOne({ _id: req.params.id })
       .select("-__v")
       .then((userData) =>
         !userData
@@ -27,15 +32,13 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
-  // Delete a course
+  // Delete a thought
   deleteThought(req, res) {
     Thoughts.findOneAndDelete({ _id: req.params.id })
-      .then((userData) =>
-        !userData
+      .then((thoughtData) =>
+        !thoughtData
           ? res.status(404).json({ message: "No thought with that ID" })
-          : Users.findOneAndDelete({
-              thoughts: { $pull: req.params.thoughtID, new: true },
-            })
+          : Users.deleteMany({ _id: { $in: thoughtData.users } })
       )
       .then(() => res.json({ message: "Thought deleted!" }))
       .catch((err) => res.status(500).json(err));
@@ -54,26 +57,12 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  addThought(req, res) {
-    console.log("You are adding a thought");
-    console.log(req.body);
-    Thoughts.findOneAndUpdate(
-      { _id: req.params.userId },
-      { $addToSet: { thoughts: req.body } },
-      { runValidators: true, new: true }
-    )
-      .then((user) =>
-        !user
-          ? res.status(404).json({ message: "No user found with that ID :(" })
-          : res.json(user)
-      )
-      .catch((err) => res.status(500).json(err));
-  },
+
   // Remove thought from a user
-  removeThought(req, res) {
+  removeThought(req, res) {    
     Users.findOneAndUpdate(
-      { _id: req.params.id },
-      { $pull: { thought: { thoughtId: req.params.id } } },
+      { _id: req.params.userId },
+      { $pull: { thoughts: { $in: [req.params.thoughtId] } } },
       { runValidators: true, new: true }
     )
       .then((user) =>
@@ -88,7 +77,7 @@ module.exports = {
     console.log("You are adding an reaction");
     console.log(req.body);
     Thoughts.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params.thoughtId },
       { $addToSet: { reactions: req.body } },
       { runValidators: true, new: true }
     )
@@ -103,8 +92,8 @@ module.exports = {
   // Remove reactions from thought
   removeReaction(req, res) {
     Thoughts.findOneAndUpdate(
-      { _id: req.params.id },
-      { $pull: { reactions: { _id: req.params.id } } },
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { _id: req.params.reactionId } } },
       { runValidators: true, new: true }
     )
       .then((thought) =>
@@ -115,5 +104,18 @@ module.exports = {
           : res.json(thought)
       )
       .catch((err) => res.status(500).json(err));
+  },
+  test(req, res) {
+    res.json({ message: "works" });
   }
+
+  // addThought(req, res) {
+  //   console.log(req.body.thoughts)
+  //   Users.findOneAndUpdate({
+  //     _id:req.params.userId
+  //   }, {
+  //     $addToSet: { thoughts:  {$each:req.body.thoughts} }
+  //   });
+  //   res.json({message:"thought added to user"})
+  // }
 };
